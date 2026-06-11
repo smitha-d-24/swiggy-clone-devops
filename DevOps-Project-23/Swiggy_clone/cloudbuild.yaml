@@ -1,0 +1,33 @@
+steps:
+
+# Build Docker Image
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '-t'
+    - 'asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA'
+    - '.'
+
+# Push Image
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'push'
+    - 'asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA'
+
+# Deploy to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+    - run
+    - deploy
+    - smitha-swiggy-service
+    - --image
+    - asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA
+    - --region
+    - asia-south1
+    - --platform
+    - managed
+    - --allow-unauthenticated
+
+images:
+- asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA
