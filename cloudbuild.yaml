@@ -1,5 +1,25 @@
 steps:
 
+# Install Node Dependencies
+- name: 'node:18'
+  entrypoint: 'npm'
+  args: ['install']
+
+# SonarQube Scan
+- name: 'sonarsource/sonar-scanner-cli:latest'
+  entrypoint: 'sh'
+  secretEnv:
+    - SONAR_TOKEN
+    - SONAR_HOST
+  args:
+    - '-c'
+    - |
+      sonar-scanner \
+      -Dsonar.projectKey=swiggy-clone \
+      -Dsonar.sources=. \
+      -Dsonar.host.url=$$SONAR_HOST \
+      -Dsonar.token=$$SONAR_TOKEN
+
 # Build Docker Image
 - name: 'gcr.io/cloud-builders/docker'
   args:
@@ -8,7 +28,7 @@ steps:
     - 'asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA'
     - '.'
 
-# Push Image
+# Push Docker Image
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
@@ -29,8 +49,16 @@ steps:
     - managed
     - --allow-unauthenticated
 
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/smitha-sonar-token/versions/latest
+      env: SONAR_TOKEN
+
+    - versionName: projects/$PROJECT_ID/secrets/smitha-sonar-host/versions/latest
+      env: SONAR_HOST
+
 images:
-- asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA
+  - asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA
 
 options:
   logging: CLOUD_LOGGING_ONLY
