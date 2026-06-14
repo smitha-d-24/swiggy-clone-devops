@@ -23,7 +23,7 @@ steps:
       sonar-scanner \
       -Dsonar.projectKey=swiggy-clone \
       -Dsonar.sources=. \
-      -Dsonar.host.url=$$SONAR_HOST \
+      -Dsonar.host.url=$_SONAR_HOST \
       -Dsonar.token=$$SONAR_TOKEN
 
 # Build Docker Image
