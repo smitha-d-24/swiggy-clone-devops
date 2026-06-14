@@ -50,7 +50,7 @@ steps:
 
 availableSecrets:
   secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/smitha-sonar-token/versions/latest
+    - versionName: projects/$PROJECT_ID/secrets/smitha-swiggy-sonar-token/versions/latest
       env: SONAR_TOKEN
 
 images:
