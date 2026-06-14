@@ -31,3 +31,6 @@ steps:
 
 images:
 - asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA
+
+options:
+  logging: CLOUD_LOGGING_ONLY
