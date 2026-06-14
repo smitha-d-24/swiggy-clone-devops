@@ -13,7 +13,7 @@ steps:
   args:
     - '-c'
     - |
-       echo "Using Sonar host: $_SONAR_HOST"
+      echo "Using Sonar host: $_SONAR_HOST"
 
       if [ -z "$_SONAR_HOST" ]; then
         echo "ERROR: _SONAR_HOST substitution variable is empty"
