@@ -13,6 +13,13 @@ steps:
   args:
     - '-c'
     - |
+       echo "Using Sonar host: $_SONAR_HOST"
+
+      if [ -z "$_SONAR_HOST" ]; then
+        echo "ERROR: _SONAR_HOST substitution variable is empty"
+        exit 1
+      fi
+      
       sonar-scanner \
       -Dsonar.projectKey=swiggy-clone \
       -Dsonar.sources=. \
