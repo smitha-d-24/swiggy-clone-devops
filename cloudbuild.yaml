@@ -5,6 +5,20 @@ steps:
   entrypoint: 'npm'
   args: ['install']
 
+# OWASP Dependency Check
+- name: 'owasp/dependency-check:latest'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      /usr/share/dependency-check/bin/dependency-check.sh \
+      --project "swiggy-clone" \
+      --scan . \
+      --format "HTML" \
+      --format "JSON" \
+      --out /workspace/dependency-check-report \
+      --disableYarnAudit \
+      --disableNodeAudit || true
 
 # Build Docker Image
 - name: 'gcr.io/cloud-builders/docker'
@@ -14,13 +28,23 @@ steps:
     - 'asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA'
     - '.'
 
+# Trivy Image Scan
+- name: 'aquasec/trivy:latest'
+  args:
+    - 'image'
+    - '--severity'
+    - 'HIGH,CRITICAL'
+    - '--exit-code'
+    - '0'
+    - 'asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA'
+
 # Push Docker Image
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
     - 'asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA'
 
-# Deploy to Cloud Run
+# Deploy Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args:
@@ -34,7 +58,8 @@ steps:
     - --platform
     - managed
     - --allow-unauthenticated
-
+    - --labels
+    - owner=smitha
 
 images:
   - asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA
