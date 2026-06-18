@@ -5,6 +5,20 @@ steps:
   entrypoint: 'npm'
   args: ['install']
 
+# SonarQube Scan
+- name: 'sonarsource/sonar-scanner-cli:latest'
+  entrypoint: 'sh'
+  secretEnv:
+    - SONAR_TOKEN
+  args:
+    - '-c'
+    - |
+      sonar-scanner \
+      -Dsonar.projectKey=swiggy-clone \
+      -Dsonar.sources=. \
+      -Dsonar.host.url=$_SONAR_HOST \
+      -Dsonar.token=$$SONAR_TOKEN
+
 # OWASP Dependency Check
 - name: 'owasp/dependency-check:latest'
   entrypoint: 'sh'
@@ -60,6 +74,11 @@ steps:
     - --allow-unauthenticated
     - --labels
     - owner=smitha
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/smitha-sonar-token/versions/latest
+      env: SONAR_TOKEN
 
 images:
   - asia-south1-docker.pkg.dev/$PROJECT_ID/smitha-artifact-repo/swiggy-clone:$SHORT_SHA
