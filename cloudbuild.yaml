@@ -15,7 +15,9 @@ steps:
     - |
       sonar-scanner \
       -Dsonar.projectKey=swiggy-clone \
-      -Dsonar.sources=. \
+      -Dsonar.projectBaseDir=/workspace \
+      -Dsonar.sources=/workspace \
+      -Dsonar.working.directory=/tmp/.scannerwork \
       -Dsonar.host.url=$_SONAR_HOST \
       -Dsonar.token=$$SONAR_TOKEN
 
