@@ -16,8 +16,8 @@ phases:
       - npm install
 
       - echo "Installing Trivy"
-      - wget https://github.com/aquasecurity/trivy/releases/download/v0.50.2/trivy_0.50.2_Linux-64bit.tar.gz
-      - tar -xzf trivy_0.50.2_Linux-64bit.tar.gz
+      - wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.tar.gz
+      - tar -xzf trivy_Linux-64bit.tar.gz
       - chmod +x trivy
       - mv trivy /usr/local/bin/
 
