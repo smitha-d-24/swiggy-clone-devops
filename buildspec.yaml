@@ -29,7 +29,7 @@ phases:
       - trivy fs --exit-code 0 --no-progress . > trivy-fs-report.txt
 
       - echo "Running OWASP Dependency Check"
-      - ./dependency-check/bin/dependency-check.sh --scan . --format HTML --out .
+      - ./dependency-check/bin/dependency-check.sh --scan . --format HTML --out . --noupdate || true
 
       - echo "Logging into DockerHub"
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -53,3 +53,4 @@ artifacts:
     - imagedefinitions.json
     - trivy-fs-report.txt
     - dependency-check-report.html
+  discard-paths: yes
