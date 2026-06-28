@@ -47,7 +47,7 @@ steps:
   args:
     - 'cp'
     - '-r'
-    - '/workspace/dependency-check-report'
+    - '/tmp/dependency-check-report'
     - 'gs://smitha-owasp-reports/$BUILD_ID/'
 
 # Build Docker Image
