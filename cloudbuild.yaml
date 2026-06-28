@@ -27,16 +27,19 @@ steps:
   args:
     - '-c'
     - |
-      mkdir -p /workspace/dependency-check-report
+      mkdir -p /tmp/dependency-check-report
+
       /usr/share/dependency-check/bin/dependency-check.sh \
-      --project "swiggy-clone" \
-      --scan /workspace \
-      --exclude "**/node_modules/**" \
-      --format "HTML" \
-      --format "JSON" \
-      --out /workspace/dependency-check-report \
-      --disableYarnAudit \
-      --disableNodeAudit || true
+        --project "swiggy-clone" \
+        --scan /workspace \
+        --exclude "**/node_modules/**" \
+        --format HTML \
+        --format JSON \
+        --out /tmp/dependency-check-report \
+        --disableYarnAudit \
+        --disableNodeAudit || true
+
+      cp -r /tmp/dependency-check-report /workspace/
 
 # Upload OWASP Report to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
