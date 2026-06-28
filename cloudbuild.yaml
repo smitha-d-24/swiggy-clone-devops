@@ -26,10 +26,13 @@ steps:
   entrypoint: 'sh'
   secretEnv:
     - NVD_API_KEY
+  volumes:
+    - name: 'owasp-reports'
+      path: '/reports'
   args:
     - '-c'
     - |
-      mkdir -p /tmp/dependency-check-report
+      mkdir -p /reports/dependency-check-report
 
       /usr/share/dependency-check/bin/dependency-check.sh \
         --project "swiggy-clone" \
@@ -37,17 +40,20 @@ steps:
         --exclude "**/node_modules/**" \
         --format HTML \
         --format JSON \
-        --out /tmp/dependency-check-report \
+        --out /reports/dependency-check-report \
         --nvdApiKey $$NVD_API_KEY \
         --disableYarnAudit \
         --disableNodeAudit || true
 
 # Upload OWASP Report to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
+  volumes:
+    - name: 'owasp-reports'
+      path: '/reports'
   args:
     - 'cp'
     - '-r'
-    - '/tmp/dependency-check-report'
+    - '/reports/dependency-check-report'
     - 'gs://smitha-owasp-reports/$BUILD_ID/'
 
 # Build Docker Image
