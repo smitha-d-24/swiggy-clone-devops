@@ -29,7 +29,7 @@ steps:
   args:
     - '-c'
     - |
-      mkdir -p /workspace/dependency-check-report
+      mkdir -p /tmp/dependency-check-report
 
       /usr/share/dependency-check/bin/dependency-check.sh \
         --project "swiggy-clone" \
@@ -37,13 +37,24 @@ steps:
         --exclude "**/node_modules/**" \
         --format HTML \
         --format JSON \
-        --out /workspace/dependency-check-report \
+        --out /tmp/dependency-check-report \
         --nvdApiKey $$NVD_API_KEY \
         --disableYarnAudit \
         --disableNodeAudit || true
   env:
     - 'HOME=/tmp'
-  user: '0'
+
+# Upload OWASP Report to GCS
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      if [ -d /tmp/dependency-check-report ]; then
+        gcloud storage cp --recursive /tmp/dependency-check-report gs://smitha-owasp-reports/$BUILD_ID/
+      else
+        echo "OWASP report folder not found, skipping upload"
+      fi
 
 # Build Docker Image
 - name: 'gcr.io/cloud-builders/docker'
@@ -98,9 +109,3 @@ images:
 
 options:
   logging: CLOUD_LOGGING_ONLY
-
-artifacts:
-  objects:
-    location: 'gs://smitha-owasp-reports/$BUILD_ID/'
-    paths:
-      - '/workspace/dependency-check-report/**'
