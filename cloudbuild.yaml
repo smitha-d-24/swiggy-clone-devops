@@ -27,14 +27,24 @@ steps:
   args:
     - '-c'
     - |
+      mkdir -p /workspace/dependency-check-report
       /usr/share/dependency-check/bin/dependency-check.sh \
       --project "swiggy-clone" \
-      --scan . \
+      --scan /workspace \
+      --exclude "**/node_modules/**" \
       --format "HTML" \
       --format "JSON" \
       --out /workspace/dependency-check-report \
       --disableYarnAudit \
       --disableNodeAudit || true
+
+# Upload OWASP Report to GCS
+- name: 'gcr.io/cloud-builders/gsutil'
+  args:
+    - 'cp'
+    - '-r'
+    - '/workspace/dependency-check-report'
+    - 'gs://smitha-owasp-reports/$BUILD_ID/'
 
 # Build Docker Image
 - name: 'gcr.io/cloud-builders/docker'
