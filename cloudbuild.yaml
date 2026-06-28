@@ -24,6 +24,8 @@ steps:
 # OWASP Dependency Check
 - name: 'owasp/dependency-check:latest'
   entrypoint: 'sh'
+  secretEnv:
+    - NVD_API_KEY
   args:
     - '-c'
     - |
@@ -36,10 +38,9 @@ steps:
         --format HTML \
         --format JSON \
         --out /tmp/dependency-check-report \
+        --nvdApiKey $$NVD_API_KEY \
         --disableYarnAudit \
         --disableNodeAudit || true
-
-      cp -r /tmp/dependency-check-report /workspace/
 
 # Upload OWASP Report to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
