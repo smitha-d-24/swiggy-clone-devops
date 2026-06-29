@@ -32,7 +32,7 @@ phases:
       - ./bin/trivy fs --exit-code 0 --no-progress . > trivy-fs-report.txt
 
       - echo "Running OWASP Dependency Check"
-      - ./dependency-check/bin/dependency-check.sh --scan . --format HTML --out . --noupdate || true
+      - ./dependency-check/bin/dependency-check.sh --scan . --format HTML --out . --nvdApiKey "$NVD_API_KEY" || true
 
       - echo "Logging into DockerHub"
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
