@@ -24,8 +24,8 @@ phases:
       - ./bin/trivy --version
 
       - echo "Installing OWASP Dependency Check"
-      - wget https://github.com/jeremylong/DependencyCheck/releases/download/v9.0.9/dependency-check-9.0.9-release.zip
-      - unzip dependency-check-9.0.9-release.zip
+      - wget https://github.com/dependency-check/DependencyCheck/releases/download/v12.1.8/dependency-check-12.1.8-release.zip
+      - unzip dependency-check-12.1.8-release.zip
 
   pre_build:
     commands:
