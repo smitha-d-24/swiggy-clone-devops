@@ -5,6 +5,7 @@ env:
     DOCKER_USERNAME: "/cicd/docker-credentials/username"
     DOCKER_PASSWORD: "/cicd/docker-credentials/password"
     DOCKER_REGISTRY: "/cicd/docker-registry/url"
+    NVD_API_KEY: "/cicd/nvd/api-key"
 
 phases:
   install:
