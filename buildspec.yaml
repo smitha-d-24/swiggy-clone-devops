@@ -16,8 +16,11 @@ phases:
       - npm install
 
       - echo "Installing Trivy"
-      - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
-      - trivy --version
+      - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh -o install-trivy.sh
+      - chmod +x install-trivy.sh
+      - ./install-trivy.sh -b ./bin
+      - export PATH=$PATH:$PWD/bin
+      - ./bin/trivy --version
 
       - echo "Installing OWASP Dependency Check"
       - wget https://github.com/jeremylong/DependencyCheck/releases/download/v9.0.9/dependency-check-9.0.9-release.zip
@@ -26,7 +29,7 @@ phases:
   pre_build:
     commands:
       - echo "Running Trivy filesystem scan"
-      - trivy fs --exit-code 0 --no-progress . > trivy-fs-report.txt
+      - ./bin/trivy fs --exit-code 0 --no-progress . > trivy-fs-report.txt
 
       - echo "Running OWASP Dependency Check"
       - ./dependency-check/bin/dependency-check.sh --scan . --format HTML --out . --noupdate || true
