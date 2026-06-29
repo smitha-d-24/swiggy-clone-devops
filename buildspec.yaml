@@ -31,13 +31,9 @@ phases:
     commands:
       - echo "Running Trivy filesystem scan"
       - ./bin/trivy fs --exit-code 0 --no-progress . > trivy-fs-report.txt
-
-      # Check whether the API key is being injected
       - echo "Length of API key: ${#NVD_API_KEY}"
-
       - echo "Running OWASP Dependency Check"
       - ./dependency-check/bin/dependency-check.sh --scan . --format HTML --out . --nvdApiKey "$NVD_API_KEY" --nvdApiDelay 5000 || true
-
       - echo "Logging into DockerHub"
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
