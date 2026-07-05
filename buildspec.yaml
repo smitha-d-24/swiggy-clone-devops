@@ -54,6 +54,4 @@ artifacts:
   files:
     - appspec.yaml
     - imagedefinitions.json
-    - trivy-fs-report.txt
-    - dependency-check-report.html
   discard-paths: yes
